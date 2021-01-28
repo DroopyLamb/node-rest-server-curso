@@ -16,18 +16,20 @@ app.use(bodyParser.json());
 app.use(require('./routes/usuario'));
 
 // Conexión a la base de datos
-mongoose.connect(process.env.URLDB ,{useNewUrlParser: true, useUnifiedTopology: true},(err, res) => {
-    if(err) throw new err;
-    console.log('Base de datos ONLINE');
-});
+mongoose.connect(process.env.URLDB,
+    { useNewUrlParser: true, useCreateIndex: true },
+    (err, res) => {
+        if (err) throw new err;
+        console.log('Base de datos ONLINE');
+    });
 /* --------> solución a estos warnings
     (node:7248) DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
     (Use `node --trace-deprecation ...` to show where the warning was created)
 */
 
-mongoose.set('useNewUrlParser', true);
+/* mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
-mongoose.set('useCreateIndex', true);
+mongoose.set('useCreateIndex', true); */
 
 // Iniciamos el servidor
 app.listen(process.env.PORT, () => {
