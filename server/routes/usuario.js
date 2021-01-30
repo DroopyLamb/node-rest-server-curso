@@ -2,11 +2,15 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const _ = require('underscore');
 const Usuario = require('../models/usuario');
+
+//Importación del middleware
+const { verificaToken, verificaAdmin_Role } = require('../middlewares/autenticacion');
 const app = express();
 
 
 
-app.get('/usuario', (req, res) => {
+app.get('/usuario', verificaToken, (req, res) => {
+    
     // Parámetros opcionales si el usuario manda una variable en el url llamada desde = número
     // Mostrará los registros a partir de ese registro
     //      --> localhost:3000/usuario?desde=10
@@ -41,7 +45,7 @@ app.get('/usuario', (req, res) => {
 
 });
 
-app.post('/usuario/', (req, res) => {
+app.post('/usuario', [verificaToken, verificaAdmin_Role], (req, res) => {
     // Guardamos lo que el usuario nos envíe
     let body = req.body;
 
@@ -71,7 +75,7 @@ app.post('/usuario/', (req, res) => {
 
 });
 
-app.put('/usuario/:id', (req, res) => {
+app.put('/usuario/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
     // Sacamos el ID
     let id = req.params.id;
 
@@ -122,7 +126,7 @@ app.put('/usuario/:id', (req, res) => {
 
 });
 
-app.delete('/usuario/:id', (req, res) => {
+app.delete('/usuario/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
 
     // Recolectamos el Id del usuario mediante el URL
     let id = req.params.id;
@@ -160,7 +164,7 @@ app.delete('/usuario/:id', (req, res) => {
     });
 });
 
-app.delete('/usuario/desactivar/:id', (req, res) => {
+app.delete('/usuario/desactivar/:id', verificaToken, (req, res) => {
     // Recolectamos el Id del usuario mediante el URL
     let id = req.params.id;
     // Objeto a actualizar
